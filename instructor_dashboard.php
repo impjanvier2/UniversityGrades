@@ -4,6 +4,7 @@ require 'db.php';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'instructor') { header("Location: login.php"); exit; }
 
 $instructor_id = $_SESSION['user_id'];
+$teacher_name = isset($_SESSION['name']) ? $_SESSION['name'] : 'Teacher'; // Fata izina rya mwarimu hano
 $msg = ""; $class = "";
 
 // 1. MANAGEMENT LOGIC: ADD N'IYAKORA UPDATE Y'AMANOTA
@@ -84,6 +85,39 @@ $roster = $stmt->get_result();
             overflow-y: auto;
         }
 
+        /* Welcome Banner New Style */
+        .welcome-banner {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            color: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .welcome-icon {
+            font-size: 1.8rem;
+            background: rgba(255, 255, 255, 0.18);
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .welcome-text h3 {
+            margin: 0 0 4px 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .welcome-text p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
         /* Custom Scrollbar for Inner Container */
         .container::-webkit-scrollbar {
             width: 8px;
@@ -125,7 +159,6 @@ $roster = $stmt->get_result();
             letter-spacing: 0.5px;
         }
 
-        /* Responsive Table Section wrapper */
         .table-responsive {
             width: 100%;
             overflow-x: auto;
@@ -169,7 +202,6 @@ $roster = $stmt->get_result();
             background-color: rgba(255, 255, 255, 0.06);
         }
 
-        /* Grade Badges styles */
         .badge-grade {
             background-color: rgba(255, 255, 255, 0.15);
             padding: 5px 12px;
@@ -191,7 +223,6 @@ $roster = $stmt->get_result();
             display: inline-block;
         }
 
-        /* Input Controls inside table */
         .grade-input {
             width: 75px;
             padding: 8px;
@@ -238,7 +269,6 @@ $roster = $stmt->get_result();
             transform: translateY(0);
         }
 
-        /* Logout Action Button */
         .logout-btn {
             background-color: #ef4444;
             color: #ffffff;
@@ -258,7 +288,6 @@ $roster = $stmt->get_result();
             box-shadow: 0 6px 16px rgba(220, 38, 38, 0.4);
         }
 
-        /* Notification Alert Feedbacks */
         .alert {
             padding: 12px 15px;
             border-radius: 8px;
@@ -285,12 +314,19 @@ $roster = $stmt->get_result();
 <body>
 
 <div class="dashboard-wrapper">
-
     <div class="container">
         
         <div class="dashboard-header">
             <h1>Instructor Assessment Console</h1>
             <a href="logout.php" class="logout-btn">Logout</a>
+        </div>
+        
+        <div class="welcome-banner">
+            <div class="welcome-icon">👨‍🏫</div>
+            <div class="welcome-text">
+                <h3>Welcome, teacher <strong><?php echo htmlspecialchars($teacher_name); ?></strong>!</h3>
+                <p>Now you are eligible to add or edit marks of your students.</p>
+            </div>
         </div>
         
         <?php if($msg) echo "<div class='alert $class'>$msg</div>"; ?>
@@ -346,7 +382,6 @@ $roster = $stmt->get_result();
         </div>
         
     </div>
-
 </div>
 
 </body>

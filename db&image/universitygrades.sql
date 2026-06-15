@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 12, 2026 at 05:51 PM
+-- Generation Time: Jun 15, 2026 at 11:14 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -63,7 +63,9 @@ CREATE TABLE `enrollments` (
 INSERT INTO `enrollments` (`enrollment_id`, `student_id`, `course_id`, `instructor_id`, `grade`) VALUES
 (1, 3, 101, 2, 'N/A'),
 (2, 17, 102, 18, '12'),
-(3, 24, 102, 25, NULL);
+(3, 24, 102, 25, NULL),
+(6, 28, 102, 29, '2'),
+(7, 27, 102, 29, '122');
 
 -- --------------------------------------------------------
 
@@ -87,7 +89,9 @@ INSERT INTO `instructors` (`instructor_id`, `name`, `department`) VALUES
 (6, 'agape TI', 'cs'),
 (14, 'mr og', 'information'),
 (18, 'm. gervais', 'software'),
-(25, 'gonzlo', 'information');
+(25, 'gonzlo', 'information'),
+(29, 'sekabanza de la paix', NULL),
+(30, 'gfv', 'gb');
 
 -- --------------------------------------------------------
 
@@ -117,7 +121,9 @@ INSERT INTO `students` (`student_id`, `first_name`, `last_name`, `major`) VALUES
 (16, 'gg', 'bet', 'software'),
 (17, 'pp', 'ppp', 'software'),
 (23, 'kjhbkjn', 'kjkjh', 'jkuhb'),
-(24, 'isingizwe', 'gonzalezi', 'ed of computer science');
+(24, 'isingizwe', 'gonzalezi', 'ed of computer science'),
+(27, 'gwiza', 'emmy', 'software engineer'),
+(28, 'mwiza', 'janne', 'software engineer');
 
 -- --------------------------------------------------------
 
@@ -137,7 +143,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `email`, `password`, `role`) VALUES
-(1, 'admin@gmail.com', '$2y$10$kBnGnSjLO4oqZ9C53RCeAeA1PtQVqP9jpmy6eLHYNyDI80/FyGm4C', 'admin'),
+(1, 'admin@gmail.com', '$2y$10$PU7Sjor61g6A/6DYQRKg3.FBBqnTHDKpRjIQnHtmIq/g.eYcEvnom', 'admin'),
 (2, 'j.smith@university.com', 'smith123', 'instructor'),
 (3, 'alice.green@student.com', 'green123', 'student'),
 (4, 'impjanvier20@gmail.com', '$2y$10$ucwRxkKVijKg4aIzoAuHD.V4F1dWk/87vzZCEmFAE0LNuifrQLIci', 'student'),
@@ -153,7 +159,11 @@ INSERT INTO `users` (`user_id`, `email`, `password`, `role`) VALUES
 (18, 'minani@gmail.com', '$2y$10$8v86yCgN.VjIeWj7S.6Nbe3XbL4q.V.rD5DOmG4P7Q7eK796S38vG', 'instructor'),
 (23, 'thgfb@gmail.com', '$2y$10$LnNZmoMNrgQV6Al2Cpmmsu/GesPkQzyh4EhV/u99oZomdawu59p8C', 'student'),
 (24, 'gonzalezi@gmail.com', '$2y$10$WCKE.luA07o4jZ3XXL.fYuqlUYwA5s3w.8/.M/9Bs9u9.x19LdVgu', 'student'),
-(25, 'gogo@gmail.com', '$2y$10$nft44hegItx9vOfOEr1OTOsCCPe7jTzJhl4hopUi7Hg.gEj6MEogW', 'instructor');
+(25, 'gogo@gmail.com', '$2y$10$nft44hegItx9vOfOEr1OTOsCCPe7jTzJhl4hopUi7Hg.gEj6MEogW', 'instructor'),
+(27, 'gwiza @gmail.com', '$2y$10$o4hTiyxxl.BgJ5bEcdaMXOgNd5qJMniEH5rlwJYxH3weZ3GFHY.2q', 'student'),
+(28, 'mwiza@gmail.com', '$2y$10$6mZ63FyGAm07SYRy1.HAF.FeSBiNCrcqGYM7wr9e2Zl0.RKPV6V.6', 'student'),
+(29, 'sekabanza@gmail.com', '$2y$10$gZsvslxjIbJs.7ZcHVxPger9msLCTX59FPnYnFADGu.JfsVS2/ULy', 'instructor'),
+(30, 'fgb@gmail.com', '$2y$10$cnQIBbiGaNPWhNri2h5hoOGKtbnvrfMwp5mFKEd/vEBKoiEY8vABW', 'instructor');
 
 --
 -- Indexes for dumped tables
@@ -207,13 +217,13 @@ ALTER TABLE `courses`
 -- AUTO_INCREMENT for table `enrollments`
 --
 ALTER TABLE `enrollments`
-  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- Constraints for dumped tables

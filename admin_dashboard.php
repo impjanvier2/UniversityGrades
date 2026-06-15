@@ -2,7 +2,6 @@
 session_start();
 require 'db.php';
 
-// Tegeka ko umuntu winjiye agomba kuba ari admin
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') { 
     header("Location: login.php"); 
     exit; 
@@ -10,79 +9,34 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 $msg = ""; $class = "";
 
-// LOGIC 1: REGISTER STUDENT (USERS + STUDENTS)
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_new_student'])) {
-    $email = $_POST['email']; 
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $first_name = $_POST['first_name'];
-    $last_name = $_POST['last_name'];
-    $major = $_POST['major'];
-
-    $conn->begin_transaction();
-    try {
-        // 1. Injiza muri Users mbanze ukore konti
-        $stmt_user = $conn->prepare("INSERT INTO users (email, password, role) VALUES (?, ?, 'student')");
-        $stmt_user->bind_param("ss", $email, $password);
-        $stmt_user->execute();
-        
-        // Fata ya ID nshya imaze kuremwa muri users
-        $new_user_id = $conn->insert_id;
-
-        // 2. Injiza muri Students: hano dushizeho 'student_id' ihwanye na 'user_id' nk'uko constraint ibishaka
-        $stmt_stud = $conn->prepare("INSERT INTO students (student_id, first_name, last_name, major) VALUES (?, ?, ?, ?)");
-        $stmt_stud->bind_param("isss", $new_user_id, $first_name, $last_name, $major);
-        $stmt_stud->execute();
-
-        $conn->commit();
-        $msg = "Umunyeshuri yanditswe neza muri sisitemu icyarimwe!";
-        $class = "success";
-    } catch (Exception $e) {
-        $conn->rollback();
-        $msg = "Ikosa ku munyeshuri: " . $e->getMessage();
-        $class = "danger";
-    }
-}
-
-// LOGIC 2: REGISTER INSTRUCTOR (USERS + INSTRUCTORS)
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_new_instructor'])) {
     $email = $_POST['email']; 
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $name = $_POST['instructor_name']; 
-    $department = $_POST['department'];
+    $department = $_POST['department']; // Hano niho hakosowe neza
 
     $conn->begin_transaction();
     try {
-        // 1. Injiza muri Users mbanze ukore konti
         $stmt_user = $conn->prepare("INSERT INTO users (email, password, role) VALUES (?, ?, 'instructor')");
         $stmt_user->bind_param("ss", $email, $password);
         $stmt_user->execute();
         
-        // Fata ya ID nshya imaze kuremwa muri users
         $new_user_id = $conn->insert_id;
 
-        // 2. Injiza muri Instructors: niba na mwarimu bimeze bityo, koresha 'instructor_id' cyangwa 'user_id' ihwanye na $new_user_id
-        // Niba table ya instructors idafite foreign key nka student, we 'instructor_id' ishobora kuba ari auto-increment (Niba byanze urambwira)
         $stmt_inst = $conn->prepare("INSERT INTO instructors (instructor_id, name, department) VALUES (?, ?, ?)");
-        if(!$stmt_inst) {
-            // Niba instructor_id ari auto_increment muri db yawe:
-            $stmt_inst = $conn->prepare("INSERT INTO instructors (name, department) VALUES (?, ?)");
-            $stmt_inst->bind_param("ss", $name, $department);
-        } else {
-            $stmt_inst->bind_param("iss", $new_user_id, $name, $department);
-        }
+        $stmt_inst->bind_param("iss", $new_user_id, $name, $department);
         $stmt_inst->execute();
 
         $conn->commit();
-        $msg = "Mwarimu yanditswe neza muri sisitemu icyarimwe!";
+        $msg = "Instructor registered successfully!";
         $class = "success";
     } catch (Exception $e) {
         $conn->rollback();
-        $msg = "Ikosa kuri Mwarimu: " . $e->getMessage();
+        $msg = "Error on instructor: " . $e->getMessage();
         $class = "danger";
     }
 }
 
-// LOGIC 3: ASSIGN COURSE PERMISSION
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['assign_permission'])) {
     $student_id = $_POST['student_id'];
     $course_id = $_POST['course_id'];
@@ -292,7 +246,7 @@ $courses_res = $conn->query("SELECT * FROM courses ORDER BY course_name ASC");
                     <div class="form-group">
                         <label>Select Target Student</label>
                         <select name="student_id" required>
-                            <option value="">-- Hitamo Umunyeshuri --</option>
+                            <option value="">-- choose student--</option>
                             <?php 
                             $students_res->data_seek(0);
                             while($s = $students_res->fetch_assoc()): 
@@ -306,7 +260,7 @@ $courses_res = $conn->query("SELECT * FROM courses ORDER BY course_name ASC");
                     <div class="form-group">
                         <label>Select Course Context</label>
                         <select name="course_id" required>
-                            <option value="">-- Hitamo Isomo runaka --</option>
+                            <option value="">-- choose  subject --</option>
                             <?php while($c = $courses_res->fetch_assoc()): ?>
                                 <option value="<?php echo $c['course_id']; ?>">
                                     <?php echo htmlspecialchars($c['course_name']); ?>
@@ -317,7 +271,7 @@ $courses_res = $conn->query("SELECT * FROM courses ORDER BY course_name ASC");
                     <div class="form-group">
                         <label>Select Appointed Instructor</label>
                         <select name="instructor_id" required>
-                            <option value="">-- Hitamo Mwarimu --</option>
+                            <option value="">-- choose teacher--</option>
                             <?php 
                             $instructors_res->data_seek(0);
                             while($i = $instructors_res->fetch_assoc()): 

@@ -38,9 +38,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['role'] = $user['role'];
 
-                if ($user['role'] == 'admin') header("Location: admin_dashboard.php");
-                elseif ($user['role'] == 'instructor') header("Location: instructor_dashboard.php");
-                elseif ($user['role'] == 'student') header("Location: student_dashboard.php");
+                if ($user['role'] == 'admin') {
+                    header("Location: admin_dashboard.php");
+                } 
+                elseif ($user['role'] == 'instructor') {
+                    // Kora query yo gufata izina rya mwarimu muri `instructors` table
+                    $stmt_name = $conn->prepare("SELECT name FROM instructors WHERE instructor_id = ?");
+                    $stmt_name->bind_param("i", $user['user_id']);
+                    $stmt_name->execute();
+                    $res_name = $stmt_name->get_result();
+                    
+                    if ($row = $res_name->fetch_assoc()) {
+                        $_SESSION['name'] = $row['name']; // Bika izina rye muri Session
+                    } else {
+                        $_SESSION['name'] = "Teacher"; // Niba ridasanzwemo
+                    }
+
+                    header("Location: instructor_dashboard.php");
+                } 
+                elseif ($user['role'] == 'student') {
+                    header("Location: student_dashboard.php");
+                }
                 exit;
             }
         } else { 
@@ -136,7 +154,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transition: all 0.3s ease;
         }
 
-        /* Style for Select Dropdown Options */
         select option {
             background-color: #1e293b;
             color: #ffffff;
@@ -149,7 +166,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
         }
 
-        /* Placeholder text color */
         input::placeholder {
             color: #94a3b8;
         }
@@ -181,7 +197,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             transform: translateY(0);
         }
 
-        /* Error Alert Box */
         .alert {
             padding: 12px 15px;
             border-radius: 8px;
@@ -194,7 +209,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-weight: 500;
         }
 
-        /* Back link to Home */
         .back-home {
             display: block;
             text-align: center;
@@ -214,7 +228,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Responsive UI */
         @media (max-width: 480px) {
             .login-card { padding: 30px 20px; }
             .login-card h2 { font-size: 1.8rem; }
@@ -224,7 +237,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
 
 <div class="full-screen-wrapper">
-
     <div class="login-card">
         <h2>Sign In</h2>
         <p class="login-subtitle">Catholic University of Rwanda</p>
@@ -250,7 +262,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <a href="index.php" class="back-home">← Back to Welcome Page</a>
     </div>
-
 </div>
 
 </body>
